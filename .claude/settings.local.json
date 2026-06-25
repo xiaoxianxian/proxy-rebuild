@@ -174,7 +174,9 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git ls-tree *)"
+      "Bash(git ls-tree *)",
+      "Bash(node multi-proxy-manager/screenshot-verify.mjs)",
+      "Bash(grep -n 'if is_port_in_use $CURSOR_PORT' /Users/xiaota/proxy-rebuild/manage.sh)"
     ]
   }
 }
