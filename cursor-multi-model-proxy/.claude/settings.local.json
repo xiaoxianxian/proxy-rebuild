@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find ~/MultiProxyManager/ -type f | head -50)",
+      "Bash(find ~/.codex-proxy/ -type f -not -path '*/.git/*' -not -path '*/node_modules/*' | sort)",
+      "Bash(find ~/hermes-multi-model-config/ -type f -not -path '*/.git/*' | sort)",
+      "Bash(chmod +x /Users/xiaota/proxy-rebuild/codex-proxy/start-proxy.sh /Users/xiaota/proxy-rebuild/hermes-proxy/start-proxy.sh)",
+      "Bash(npm install *)",
+      "Bash(timeout 5 node proxy.js)",
+      "Bash(node proxy.js)",
+      "Bash(curl -s http://127.0.0.1:18790/health)",
+      "Bash(kill %1)",
+      "Bash(pip3 install *)",
+      "Bash(python3 proxy.py)",
+      "Bash(curl -s http://127.0.0.1:18793/health)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://127.0.0.1:18792/api/status)",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s http://127.0.0.1:18790/api/config)",
+      "Bash(curl -s http://127.0.0.1:18793/v1/models)",
+      "Bash(curl -s http://127.0.0.1:18793/api/config)",
+      "Bash(curl -s http://127.0.0.1:18792/)",
+      "Bash(kill %1 %2 %3)",
+      "Bash(mkdir -p /Users/xiaota/Library/LaunchAgents)",
+      "Bash(awk '{print $1, $2, $NF}')",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18792/api/codex/v1/models)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18792/api/codex/api/config)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18792/api/codex/api/routing-mode)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18792/api/codex/api/providers/status)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18792/api/codex/api/balances)",
+      "Bash(curl -sv http://127.0.0.1:18792/api/codex/v1/models)"
+    ]
+  }
+}

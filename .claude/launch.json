@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "multi-proxy-manager",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["multi-proxy-manager/server.js"],
+      "port": 18792,
+      "autoPort": true
+    }
+  ]
+}
