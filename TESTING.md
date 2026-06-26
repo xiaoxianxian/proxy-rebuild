@@ -20,6 +20,7 @@
 | 当前配置 | 显示配置文件路径、当前模型、路由模式 | ✅ |
 | Provider 状态 | 显示各上游 provider 在线状态和模型数 | ✅ |
 | 切换历史 | 显示最近 10 条模型切换记录 | ✅ |
+| 动态页面生成 | 启动时检测已安装代理，前端动态生成对应配置页 | ✅ |
 
 ## 3. 日志中心
 
@@ -39,6 +40,9 @@
 | API 转发 | 将请求转发到对应代理 | ✅ |
 | 健康检查 | 检测各代理健康状态 | ✅ |
 | 开机自启 | macOS LaunchAgent 管理 | ✅ |
+| 乐观更新 | 启停操作成功后立即更新 UI，无需等待全局刷新 | ✅ |
+| 两阶段终止 | 停止代理时 SIGTERM → 500ms → SIGKILL | ✅ |
+| 端口等待 | 启动代理时轮询等待端口绑定（最多 5 秒） | ✅ |
 
 ## 5. 安装/卸载
 
@@ -106,6 +110,9 @@
 - 停止不存在的代理时报错
 - 端口冲突时未提示用户
 - 开机自启设置后重启不生效
+- ~~lsof 命令找不到（已修复：使用 /usr/sbin/lsof 完整路径）~~
+- ~~启停代理时整个 UI 闪烁重建（已修复：乐观更新）~~
+- ~~toggle 时 optimistic 状态被 loadStatus 覆盖（已修复：保留乐观状态）~~
 
 ---
 
@@ -317,3 +324,7 @@
 4. **Cursor 供应商编辑**: 添加 `buildCursorProvidersEditor` 和 `showAddProviderModal` 函数，支持增删改查
 5. **日志功能**: 日志系统正常工作，支持代理筛选和级别过滤
 6. **动态页面可见性**: `buildProxyConfigs()` 在启动时检测已安装代理，前端 `renderProxyPages()` 动态生成对应页面
+7. **Toggle 竞态修复**: `loadStatus` 保留 optimistic toggle 状态，防止后端响应覆盖前端乐观更新
+8. **乐观更新**: `toggleProxy` 成功后立即更新 UI，不再调用全量 `loadStatus()` 重建整个页面
+9. **lsof 路径修复**: `install.sh` 中所有 `lsof` 调用使用完整路径 `/usr/sbin/lsof`
+10. **卸载优化**: `--uninstall` 不再删除 `node_modules` 和编译产物，仅清理 `.env` 和 LaunchAgent
