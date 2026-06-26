@@ -181,7 +181,8 @@
       "Bash(node multi-proxy-manager/debug-toggle.mjs)",
       "Bash(node multi-proxy-manager/toggle-test2.mjs)",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('codex:', d['codex']['running']\\)\")",
-      "Bash(rm -f multi-proxy-manager/debug-toggle*.mjs multi-proxy-manager/final-verify.mjs multi-proxy-manager/toggle-test*.mjs 2>/dev/null *)"
+      "Bash(rm -f multi-proxy-manager/debug-toggle*.mjs multi-proxy-manager/final-verify.mjs multi-proxy-manager/toggle-test*.mjs 2>/dev/null *)",
+      "Bash(node multi-proxy-manager/debug-toggle-final.mjs)"
     ]
   }
 }
