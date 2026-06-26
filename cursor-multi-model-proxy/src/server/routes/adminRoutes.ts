@@ -1,10 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../../db/database.js';
-import { SecretsManager } from '../../utils/crypto.js';
+import { SecretsManager, getEncryptionKey } from '../../utils/crypto.js';
 
 const router = Router();
-const SECRET_KEY = process.env.ENCRYPTION_KEY || 'default-secret-key-change-in-production';
-const secrets = new SecretsManager(SECRET_KEY);
+const secrets = new SecretsManager();
 
 // ==================== Provider CRUD ====================
 
@@ -39,15 +38,28 @@ router.post('/providers', (req: Request, res: Response) => {
 // PUT /admin-api/providers/:id
 router.put('/providers/:id', (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, provider_id, api_key, base_url, enabled } = req.body;
   const updates: string[] = [];
   const values: any[] = [];
 
-  if (name) { updates.push('name = ?'); values.push(name); }
-  if (provider_id) { updates.push('provider_id = ?'); values.push(provider_id); }
-  if (api_key) { updates.push('api_key = ?'); values.push(secrets.encrypt(api_key)); }
-  if (base_url) { updates.push('base_url = ?'); values.push(base_url); }
-  if (enabled !== undefined) { updates.push('enabled = ?'); values.push(enabled ? 1 : 0); }
+  const ALLOWED_COLUMNS = new Set(['name', 'provider_id', 'api_key', 'base_url', 'enabled']);
+
+  for (const col of Object.keys(req.body)) {
+    if (!ALLOWED_COLUMNS.has(col)) {
+      res.status(400).json({ error: `Unknown column: ${col}` });
+      return;
+    }
+    if (req.body[col] === undefined || req.body[col] === null) continue;
+    if (col === 'api_key') {
+      updates.push('api_key = ?');
+      values.push(secrets.encrypt(req.body[col]));
+    } else if (col === 'enabled') {
+      updates.push('enabled = ?');
+      values.push(req.body[col] ? 1 : 0);
+    } else {
+      updates.push(`${col} = ?`);
+      values.push(req.body[col]);
+    }
+  }
 
   if (updates.length > 0) {
     updates.push("updated_at = datetime('now')");

@@ -182,7 +182,29 @@
       "Bash(node multi-proxy-manager/toggle-test2.mjs)",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('codex:', d['codex']['running']\\)\")",
       "Bash(rm -f multi-proxy-manager/debug-toggle*.mjs multi-proxy-manager/final-verify.mjs multi-proxy-manager/toggle-test*.mjs 2>/dev/null *)",
-      "Bash(node multi-proxy-manager/debug-toggle-final.mjs)"
+      "Bash(node multi-proxy-manager/debug-toggle-final.mjs)",
+      "Bash(/usr/sbin/lsof -v)",
+      "Bash(bash install.sh --stop)",
+      "Bash(kill -9 4484)",
+      "Bash(kill -9 4780)",
+      "Bash(kill -9 4934 4927)",
+      "Bash(kill -9 5020)",
+      "Bash(/usr/sbin/lsof -ti :18790 :18792 :18793 :18794)",
+      "Bash(/usr/sbin/lsof -i :18790 -i :18792 -i :18793 -i :18794)",
+      "Bash(bash install.sh --status)",
+      "Bash(bash install.sh --start)",
+      "Bash(kill -9 6166 6171 6184)",
+      "Bash(kill -9 6603 6622)",
+      "Bash(kill -9 10772)",
+      "Bash(kill -9 11154)",
+      "Bash(bash install.sh --help)",
+      "Bash(bash install.sh --uninstall)",
+      "Bash(bash install.sh --restart)",
+      "Bash(/usr/sbin/lsof -i :18792)",
+      "Bash(bash install.sh --autostart)",
+      "Bash(bash install.sh --autostop)",
+      "Bash(bash install.sh --bogus)",
+      "Bash(echo \"Exit code: $?\")"
     ]
   }
 }

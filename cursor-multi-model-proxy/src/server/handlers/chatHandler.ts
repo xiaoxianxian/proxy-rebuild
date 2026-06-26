@@ -5,8 +5,7 @@ import { ProviderAdapter, ProviderConfig } from '../../providers/base.js';
 import { db } from '../../db/database.js';
 import { SecretsManager } from '../../utils/crypto.js';
 
-const SECRET_KEY = process.env.ENCRYPTION_KEY || 'default-secret-key-change-in-production';
-const secrets = new SecretsManager(SECRET_KEY);
+const secrets = new SecretsManager();
 
 /**
  * 根据模型名从数据库中查找匹配的 Provider 配置
