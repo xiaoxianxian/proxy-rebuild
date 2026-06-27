@@ -1,0 +1,14 @@
+{
+  "name": "proxy-rebuild",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-Proxy Manager — 统一管理 Codex / Hermes / Cursor 代理服务",
+  "scripts": {
+    "test": "jest --passWithNoTests --colors",
+    "test:coverage": "jest --passWithNoTests --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}

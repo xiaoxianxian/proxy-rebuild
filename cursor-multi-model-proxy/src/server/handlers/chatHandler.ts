@@ -100,16 +100,27 @@ export async function forwardToProvider(
     res.setHeader('Connection', 'keep-alive');
     const reader = upstreamResponse.body!.getReader();
     const decoder = new TextDecoder();
+    let cancelled = false;
+    res.on('close', () => { cancelled = true; });
+
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        res.write(decoder.decode(value, { stream: true }));
+        if (done || cancelled) break;
+        if (!res.writableEnded) {
+          res.write(decoder.decode(value, { stream: true }));
+        }
+      }
+    } catch (e: any) {
+      if (cancelled) {
+        console.log('[ChatHandler] Client disconnected during streaming');
+      } else {
+        console.error(`[ChatHandler] Stream error: ${e.message}`);
       }
     } finally {
       reader.releaseLock();
+      if (!res.writableEnded) res.end();
     }
-    res.end();
   } else {
     const data = await upstreamResponse.json();
     res.json(data);
