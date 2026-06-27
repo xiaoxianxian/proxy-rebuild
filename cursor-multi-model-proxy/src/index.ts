@@ -47,7 +47,7 @@ program
   .description('停止代理服务')
   .action(() => {
     try {
-      const pid = execSync('lsof -ti :18794 2>/dev/null', { encoding: 'utf-8' }).trim();
+      const pid = execSync('/usr/sbin/lsof -ti :18794 2>/dev/null', { encoding: 'utf-8' }).trim();
       if (pid) {
         execSync(`kill ${pid}`, { stdio: 'inherit' });
         console.log('[cursor-proxy] 代理服务已停止');
