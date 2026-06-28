@@ -22,7 +22,7 @@ router.get('/providers', (_req: Request, res: Response) => {
 router.post('/providers', (req: Request, res: Response) => {
   const { id, name, provider_id, api_key, base_url, enabled } = req.body;
   if (!id || !name || !provider_id || !api_key || !base_url) {
-    res.status(400).json({ error: 'Missing required fields: id, name, provider_id, api_key, base_url' });
+    res.status(400).json({ success: false, error: 'Missing required fields: id, name, provider_id, api_key, base_url', code: 'MISSING_FIELDS' });
     return;
   }
   try {
@@ -31,7 +31,7 @@ router.post('/providers', (req: Request, res: Response) => {
     stmt.run(id, name, provider_id, encKey, base_url, enabled ? 1 : 0);
     res.json({ success: true });
   } catch (e: any) {
-    res.status(409).json({ error: e.message });
+    res.status(409).json({ success: false, error: e.message, code: 'DUPLICATE_PROVIDER' });
   }
 });
 
@@ -45,7 +45,7 @@ router.put('/providers/:id', (req: Request, res: Response) => {
 
   for (const col of Object.keys(req.body)) {
     if (!ALLOWED_COLUMNS.has(col)) {
-      res.status(400).json({ error: `Unknown column: ${col}` });
+      res.status(400).json({ success: false, error: `Unknown column: ${col}`, code: 'INVALID_COLUMN' });
       return;
     }
     if (req.body[col] === undefined || req.body[col] === null) continue;
@@ -62,7 +62,7 @@ router.put('/providers/:id', (req: Request, res: Response) => {
   }
 
   if (updates.length === 0) {
-    res.status(400).json({ error: 'No valid fields to update' });
+    res.status(400).json({ success: false, error: 'No valid fields to update', code: 'EMPTY_UPDATE' });
     return;
   }
 
@@ -70,7 +70,7 @@ router.put('/providers/:id', (req: Request, res: Response) => {
   values.push(id);
   const result = db.prepare(`UPDATE providers SET ${updates.join(', ')} WHERE id = ?`).run(...values);
   if (result.changes === 0) {
-    res.status(404).json({ error: 'Provider not found' });
+    res.status(404).json({ success: false, error: 'Provider not found', code: 'PROVIDER_NOT_FOUND' });
     return;
   }
   res.json({ success: true });
@@ -80,7 +80,7 @@ router.put('/providers/:id', (req: Request, res: Response) => {
 router.delete('/providers/:id', (req: Request, res: Response) => {
   const result = db.prepare('DELETE FROM providers WHERE id = ?').run(req.params.id);
   if (result.changes === 0) {
-    res.status(404).json({ error: 'Provider not found' });
+    res.status(404).json({ success: false, error: 'Provider not found', code: 'PROVIDER_NOT_FOUND' });
     return;
   }
   res.json({ success: true });
@@ -103,7 +103,7 @@ router.get('/models', (_req: Request, res: Response) => {
 router.post('/models', (req: Request, res: Response) => {
   const { id, provider_id, name, enabled, alias } = req.body;
   if (!id || !provider_id || !name) {
-    res.status(400).json({ error: 'Missing required fields: id, provider_id, name' });
+    res.status(400).json({ success: false, error: 'Missing required fields: id, provider_id, name', code: 'MISSING_FIELDS' });
     return;
   }
   db.prepare('INSERT INTO models (id, provider_id, name, enabled, alias) VALUES (?, ?, ?, ?, ?)').run(

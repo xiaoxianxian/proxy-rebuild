@@ -13,8 +13,8 @@ export const db: BetterSqlite3Database = new Database(DB_PATH);
 // 启用 WAL 模式提升并发性能
 db.pragma('journal_mode = WAL');
 
-// 禁用外键约束（管理员手动管理数据，FK 会导致空指针查询失败）
-db.pragma('foreign_keys = OFF');
+// 启用外键约束以确保引用完整性
+db.pragma('foreign_keys = ON');
 
 // 创建数据库表
 db.exec(`
@@ -36,7 +36,7 @@ db.exec(`
     enabled INTEGER DEFAULT 1,
     alias TEXT,
     created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (provider_id) REFERENCES providers(id)
+    FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS routes (
@@ -60,3 +60,16 @@ db.exec(`
     value TEXT NOT NULL
   );
 `);
+
+// 清理孤儿记录（models 中外 provider_id 指向已删除的 providers）
+try {
+  const orphanResult = db.prepare(`
+    DELETE FROM models WHERE provider_id NOT IN (SELECT id FROM providers)
+  `).run();
+  if (orphanResult.changes > 0) {
+    console.log(`[DB] Cleaned up ${orphanResult.changes} orphaned model(s)`);
+  }
+} catch (e) {
+  // Best-effort: non-critical migration
+  console.warn('[DB] Orphan cleanup skipped:', (e as Error).message);
+}

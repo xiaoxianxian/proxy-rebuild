@@ -65,7 +65,7 @@ export async function forwardToProvider(
   const registry = ProviderRegistry.getInstance();
   const adapter = registry.get(providerConfig.providerId);
   if (!adapter) {
-    res.status(500).json({ error: { message: `Unknown provider type: ${providerConfig.providerId}` } });
+    res.status(500).json({ success: false, error: `Unknown provider type: ${providerConfig.providerId}`, code: 'UNKNOWN_PROVIDER' });
     return;
   }
 
@@ -90,7 +90,7 @@ export async function forwardToProvider(
   if (!upstreamResponse.ok) {
     const errText = await upstreamResponse.text();
     console.error(`[ChatHandler] Upstream error: ${errText}`);
-    res.status(upstreamResponse.status).json({ error: { message: errText } });
+    res.status(upstreamResponse.status).json({ success: false, error: errText, code: 'UPSTREAM_ERROR' });
     return;
   }
 
@@ -143,13 +143,13 @@ export async function handleChatCompletion(req: Request, res: Response): Promise
   const { model, messages, stream } = req.body;
 
   if (!model || !messages || !Array.isArray(messages)) {
-    res.status(400).json({ error: { message: 'Invalid request: model and messages are required' } });
+    res.status(400).json({ success: false, error: 'Invalid request: model and messages are required', code: 'INVALID_REQUEST' });
     return;
   }
 
   const providerConfig = findProviderConfig(model);
   if (!providerConfig) {
-    res.status(404).json({ error: { message: `No enabled provider found for model: ${model}` } });
+    res.status(404).json({ success: false, error: `No enabled provider found for model: ${model}`, code: 'NO_PROVIDER' });
     return;
   }
 
@@ -166,6 +166,6 @@ export async function handleChatCompletion(req: Request, res: Response): Promise
     } catch {
       // non-critical
     }
-    res.status(502).json({ error: { message: `Proxy error: ${e.message}` } });
+    res.status(502).json({ success: false, error: `Proxy error: ${e.message}`, code: 'PROXY_ERROR' });
   }
 }

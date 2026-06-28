@@ -14,6 +14,5 @@ export default {
     }],
   },
   transformIgnorePatterns: [],
-  forceExit: true,
   clearMocks: true,
 };
