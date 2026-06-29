@@ -35,40 +35,44 @@ router.post('/providers', (req: Request, res: Response) => {
   }
 });
 
-// PUT /admin-api/providers/:id
+// PUT /admin-api/providers/:id — D4: fixed dynamic SQL injection.
+// Only allows a strict whitelist of columns and uses parameterized queries.
 router.put('/providers/:id', (req: Request, res: Response) => {
   const { id } = req.params;
-  const updates: string[] = [];
-  const values: any[] = [];
+  const body = req.body;
 
-  const ALLOWED_COLUMNS = new Set(['name', 'provider_id', 'api_key', 'base_url', 'enabled']);
+  const allowedColumns = ['name', 'provider_id', 'api_key', 'base_url', 'enabled'];
+  const safeBody: Record<string, unknown> = {};
 
-  for (const col of Object.keys(req.body)) {
-    if (!ALLOWED_COLUMNS.has(col)) {
-      res.status(400).json({ success: false, error: `Unknown column: ${col}`, code: 'INVALID_COLUMN' });
-      return;
-    }
-    if (req.body[col] === undefined || req.body[col] === null) continue;
-    if (col === 'api_key') {
-      updates.push('api_key = ?');
-      values.push(secrets.encrypt(req.body[col]));
-    } else if (col === 'enabled') {
-      updates.push('enabled = ?');
-      values.push(req.body[col] ? 1 : 0);
-    } else {
-      updates.push(`${col} = ?`);
-      values.push(req.body[col]);
-    }
+  for (const col of allowedColumns) {
+    if (!(col in body)) continue;
+    const val = body[col];
+    if (val === undefined || val === null) continue;
+    safeBody[col] = val;
   }
 
-  if (updates.length === 0) {
+  const keys = Object.keys(safeBody);
+  if (keys.length === 0) {
     res.status(400).json({ success: false, error: 'No valid fields to update', code: 'EMPTY_UPDATE' });
     return;
   }
 
+  // Build parameterized UPDATE with explicit column mapping.
+  const updates: string[] = [];
+  const values: unknown[] = [];
+
+  if ('name' in safeBody)            { updates.push('name = ?');             values.push(safeBody.name); }
+  if ('provider_id' in safeBody)     { updates.push('provider_id = ?');      values.push(safeBody.provider_id); }
+  if ('api_key' in safeBody)         { updates.push('api_key = ?');          values.push(secrets.encrypt(String(safeBody.api_key))); }
+  if ('base_url' in safeBody)        { updates.push('base_url = ?');         values.push(safeBody.base_url); }
+  if ('enabled' in safeBody)         { updates.push('enabled = ?');          values.push(safeBody.enabled ? 1 : 0); }
+
   updates.push("updated_at = datetime('now')");
   values.push(id);
-  const result = db.prepare(`UPDATE providers SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+
+  const sql = `UPDATE providers SET ${updates.join(', ')} WHERE id = ?`;
+  const result = db.prepare(sql).run(...values);
+
   if (result.changes === 0) {
     res.status(404).json({ success: false, error: 'Provider not found', code: 'PROVIDER_NOT_FOUND' });
     return;
@@ -141,7 +145,10 @@ router.post('/routes', (req: Request, res: Response) => {
 router.get('/logs', (req: Request, res: Response) => {
   const limit = parseInt(req.query.limit as string) || 100;
   const logs = db.prepare('SELECT * FROM logs ORDER BY timestamp DESC LIMIT ?').all(limit);
-  const logsFormatted = (logs as any[]).map((l: any) => `[${l.timestamp}] ${l.level}: ${l.message}`).join('\n');
+  const logsFormatted = (logs as any[]).map((l: any) => {
+    const proxyField = l.proxy ? `[${l.proxy}] ` : '';
+    return `[${l.timestamp}] ${proxyField}${l.level}: ${l.message}`;
+  }).join('\n');
   res.json({ logs: logsFormatted });
 });
 

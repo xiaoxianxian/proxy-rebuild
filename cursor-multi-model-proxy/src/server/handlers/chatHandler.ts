@@ -128,8 +128,8 @@ export async function forwardToProvider(
 
   // 记录日志
   try {
-    db.prepare('INSERT INTO logs (level, message) VALUES (?, ?)').run(
-      'INFO', `Model: ${reqBody.model}, Provider: ${providerConfig.name}, Status: OK`
+    db.prepare('INSERT INTO logs (level, message, proxy) VALUES (?, ?, ?)').run(
+      'INFO', `Model: ${reqBody.model}, Provider: ${providerConfig.name}, Status: OK`, providerConfig.name
     );
   } catch {
     // non-critical
@@ -160,8 +160,8 @@ export async function handleChatCompletion(req: Request, res: Response): Promise
   } catch (e: any) {
     console.error(`[ChatHandler] Error: ${e.message}`);
     try {
-      db.prepare('INSERT INTO logs (level, message) VALUES (?, ?)').run(
-        'ERROR', `Model: ${model}, Error: ${e.message}`
+      db.prepare('INSERT INTO logs (level, message, proxy) VALUES (?, ?, ?)').run(
+        'ERROR', `Model: ${model}, Error: ${e.message}`, providerConfig?.name ?? 'unknown'
       );
     } catch {
       // non-critical

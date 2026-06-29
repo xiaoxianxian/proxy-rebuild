@@ -53,7 +53,8 @@ function createTestDb() {
     );
 
     CREATE TABLE IF NOT EXISTS logs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY,
+      proxy TEXT DEFAULT 'system',
       timestamp TEXT DEFAULT (datetime('now')),
       level TEXT NOT NULL,
       message TEXT NOT NULL
@@ -64,6 +65,9 @@ function createTestDb() {
       value TEXT NOT NULL
     );
   `);
+
+  // Apply D1 migration: UNIQUE index on provider_id
+  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS unique_provider_id ON providers(provider_id)`);
 
   return db;
 }
@@ -163,6 +167,17 @@ describe('Cursor SQLite Database Layer', () => {
 
       expect(() => {
         insert.run('prov-001', 'Duplicate', 'openai', 'key2', 'https://api.openai.com', 1);
+      }).toThrow();
+    });
+
+    it('rejects duplicate provider_id (UNIQUE constraint)', () => {
+      const insert = db.prepare(
+        'INSERT INTO providers (id, name, provider_id, api_key, base_url, enabled) VALUES (?, ?, ?, ?, ?, ?)'
+      );
+      insert.run('prov-001', 'OpenAI', 'openai', 'key1', 'https://api.openai.com', 1);
+
+      expect(() => {
+        insert.run('prov-002', 'Duplicate', 'openai', 'key2', 'https://api.dupe.com', 1);
       }).toThrow();
     });
 
