@@ -224,38 +224,6 @@ body {
 }
 
 /* ============================================
-   Nav Tooltip (Rule 11: Global, NOT in media query)
-   ============================================ */
-.nav-item[data-tooltip] {
-  position: relative;
-}
-
-.nav-item[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--color-text);
-  color: var(--color-bg);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 150;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.nav-item[data-tooltip]:hover::after,
-.nav-item[data-tooltip]:focus::after {
-  opacity: 1;
-}
-
-/* ============================================
    Main Content
    ============================================ */
 .main {
@@ -776,6 +744,9 @@ body {
     <div class="version-info" id="sidebarVersion">
       v1.0.0
     </div>
+    <button class="btn btn-sm btn-outline" id="darkModeToggle" style="width:100%;margin-top:8px;" title="切换暗色模式">
+      &#9789; 暗色模式
+    </button>
     <button class="btn-logout" onclick="handleLogout()" title="退出登录">&nbsp;&nbsp;登出&nbsp;&nbsp;</button>
   </div>
 </aside>
@@ -978,8 +949,11 @@ body {
   document.getElementById('sidebarNav').addEventListener('click', function(e) {
     var navItem = e.target.closest('.nav-item');
     if (!navItem) return;
-    // Handle proxy nav items (anchor elements)
-    if (navItem.classList.contains('proxy-nav-item')) return;
+    // Handle proxy nav items (anchor elements) — navigate to proxy-config page
+    if (navItem.classList.contains('proxy-nav-item')) {
+      closeMobileSidebar();
+      return;
+    }
     var pageId = navItem.dataset.page;
     if (pageId) {
       switchPage(pageId);
@@ -1106,24 +1080,24 @@ body {
       var btnText = isRunning ? '停止' : '启动';
       var btnIcon = isRunning ? '\u23F8' : '\u25B6';
 
-      // Rule 10: Unified status badges (pill-shaped with dot + glow)
+      // Rule 10: Unified status badges (pill-shaped with dot)
       var statusBadge = '<span class="status-badge ' + statusClass + '">' +
-        '<span class="status-dot"></span>' +
+        '<span class="dot"></span>' +
         statusText +
         '</span>';
 
       var healthBadge = '';
       if (status.health) {
         var healthStatus = status.health.status;
-        var healthClass = healthStatus === 'healthy' ? 'status-badge running' : 'status-badge stopped';
+        var healthClass = healthStatus === 'healthy' ? 'status-badge online' : 'status-badge offline';
         var healthText = healthStatus === 'healthy' ? '健康' : '异常';
         healthBadge = '<span class="' + healthClass + '">' +
-          '<span class="status-dot"></span>' +
+          '<span class="dot"></span>' +
           healthText +
           '</span>';
       } else if (!isRunning) {
-        healthBadge = '<span class="status-badge stopped">' +
-          '<span class="status-dot"></span>' +
+        healthBadge = '<span class="status-badge offline">' +
+          '<span class="dot"></span>' +
           '未检测' +
           '</span>';
       }
@@ -1456,9 +1430,13 @@ body {
 
     container.innerHTML = proxyNames.map(function(name) {
       var config = PROXY_CONFIGS[name] || { name: name, icon: '&#9729;', iconClass: '' };
+      var status = proxyStatus[name];
+      var badgeClass = status && status.running ? 'running' : 'stopped';
+      var badgeText = status && status.running ? 'ON' : 'OFF';
       return '<a href="proxy-config.html?proxy=' + name + '" class="nav-item proxy-nav-item" data-proxy="' + esc(name) + '" data-tooltip="' + esc(config.name) + '" tabindex="0">' +
         '<span class="nav-icon">' + config.icon + '</span>' +
         esc(config.name) +
+        '<span class="nav-badge ' + badgeClass + '">' + badgeText + '</span>' +
         '</a>';
     }).join('');
   }
@@ -1469,8 +1447,37 @@ body {
     window.location.href = 'login.html';
   };
 
+  // ===== Dark Mode Toggle =====
+  function initDarkMode() {
+    var toggle = document.getElementById('darkModeToggle');
+    var isDark = localStorage.getItem('darkMode') === 'true';
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      if (toggle) toggle.innerHTML = '&#9728; 亮色模式';
+    }
+    if (toggle) {
+      toggle.addEventListener('click', function() {
+        var html = document.documentElement;
+        var isNowDark = html.classList.contains('dark');
+        if (isNowDark) {
+          html.classList.remove('dark');
+          html.classList.add('light');
+          localStorage.setItem('darkMode', 'false');
+          toggle.innerHTML = '&#9789; 暗色模式';
+        } else {
+          html.classList.add('dark');
+          html.classList.remove('light');
+          localStorage.setItem('darkMode', 'true');
+          toggle.innerHTML = '&#9728; 亮色模式';
+        }
+      });
+    }
+  }
+
   // ===== Initialize =====
   function init() {
+    initDarkMode();
     checkAuth().then(function(authOk) {
       if (!authOk) return;
 
