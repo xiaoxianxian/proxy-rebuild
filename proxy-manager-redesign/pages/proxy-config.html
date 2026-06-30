@@ -11,13 +11,9 @@
 <body>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h1>
-          <span class="logo-icon">P</span>
-          Proxy Manager
-        </h1>
-        <button class="sidebar-close" onclick="closeSidebar()" aria-label="关闭侧边栏">&times;</button>
-      </div>
+      <div class="logo-icon">P</div>
+      <h1>Proxy Manager</h1>
+      <button class="sidebar-close" onclick="closeSidebar()" aria-label="关闭侧边栏">&times;</button>
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item" href="dashboard.html" data-tooltip="返回概览">
@@ -25,17 +21,17 @@
       </a>
       <div class="nav-section-label">代理服务</div>
       <a class="nav-item" href="proxy-config.html?proxy=codex" data-tooltip="Codex Proxy">
-        <span class="icon">&#129392;</span> Codex Proxy
+        <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></span> Codex Proxy
       </a>
       <a class="nav-item" href="proxy-config.html?proxy=hermes" data-tooltip="Hermes Proxy">
-        <span class="icon">&#9889;</span> Hermes Proxy
+        <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> Hermes Proxy
       </a>
       <a class="nav-item active" href="proxy-config.html?proxy=cursor" data-tooltip="Cursor Proxy">
-        <span class="icon">&#9729;</span> Cursor Proxy
+        <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span> Cursor Proxy
       </a>
       <div class="nav-section-label">系统</div>
       <a class="nav-item" href="logs.html" data-tooltip="查看系统日志">
-        <span class="icon">&#128221;</span> 日志
+        <span class="icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span> 日志
       </a>
     </nav>
     <div class="sidebar-footer">
@@ -45,11 +41,13 @@
   </aside>
 
   <main class="main">
-    <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="打开侧边栏">&#9776;</button>
+    <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="打开侧边栏">
+      <svg class="icon-svg icon-svg-lg" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     
     <!-- Offline Banner -->
     <div class="offline-banner hidden" id="offlineBanner">
-      <span class="offline-banner-icon">&#9888;</span>
+      <span class="offline-banner-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
       <span>后端服务未运行，当前显示模拟数据。请确认 Manager 服务已启动。</span>
     </div>
     
@@ -70,10 +68,10 @@
       </div>
       <div class="proxy-header-actions">
         <button class="btn btn-primary" id="btnStartStop" onclick="toggleProxyStatus()">
-          &#9654; 停止
+          <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 停止
         </button>
         <button class="btn" onclick="refreshPage()">
-          &#8635; 刷新
+          <svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> 刷新
         </button>
       </div>
     </div>
@@ -130,7 +128,7 @@
                   <th>名称</th>
                   <th>Provider ID</th>
                   <th>Base URL</th>
-                  <th>API Key <button class="key-toggle-btn" onclick="toggleKeyVisibility()" title="显示/隐藏密钥">&#128274;</button></th>
+                  <th>API Key <button class="key-toggle-btn" onclick="toggleKeyVisibility()" title="显示/隐藏密钥"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button></th>
                   <th>启用</th>
                   <th>操作</th>
                 </tr>
@@ -175,7 +173,7 @@
           <div class="card-title" style="margin-bottom: 0;">切换历史</div>
           <div class="card-subtitle" style="margin-bottom: 0;">最近 20 条模型切换记录</div>
         </div>
-        <button class="btn" onclick="clearHistory()">&#128465; 清除历史</button>
+        <button class="btn" onclick="clearHistory()"><svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> 清除历史</button>
       </div>
       <div class="table-wrapper" style="margin-top: 12px;">
         <table>
@@ -392,9 +390,9 @@
     };
 
     var proxyIconMap = {
-      codex: '&#129392;',
-      hermes: '&#9889;',
-      cursor: '&#9729;',
+      codex: '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>',
+      hermes: '<svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      cursor: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
     };
 
     var proxyColorMap = {
@@ -437,15 +435,15 @@
       if (!isCursor) {
         if (providersBtn) {
           providersBtn.disabled = true;
-          providersBtn.style.color = 'var(--text-tertiary)';
+          providersBtn.style.color = 'var(--color-text-tertiary)';
           providersBtn.style.cursor = 'not-allowed';
-          providersBtn.style.background = 'var(--bg-secondary)';
+          providersBtn.style.background = 'var(--color-bg-secondary)';
         }
         if (balancesBtn) {
           balancesBtn.disabled = true;
-          balancesBtn.style.color = 'var(--text-tertiary)';
+          balancesBtn.style.color = 'var(--color-text-tertiary)';
           balancesBtn.style.cursor = 'not-allowed';
-          balancesBtn.style.background = 'var(--bg-secondary)';
+          balancesBtn.style.background = 'var(--color-bg-secondary)';
         }
       }
     }
@@ -561,11 +559,11 @@
             if (st.running) {
               badge.className = 'status-badge online';
               text.textContent = '运行中';
-              btn.innerHTML = '&#9654; 停止';
+              btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 停止';
             } else {
               badge.className = 'status-badge offline';
               text.textContent = '未运行';
-              btn.innerHTML = '&#9655; 启动';
+              btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> 启动';
             }
           }
         } else {
@@ -607,7 +605,7 @@
             isRunning = false;
             badge.className = 'status-badge offline';
             text.textContent = '未运行';
-            btn.innerHTML = '&#9655; 启动';
+            btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> 启动';
             showToast(displayName + ' 已停止', 'info');
             return;
           }
@@ -615,7 +613,7 @@
         isRunning = false;
         badge.className = 'status-badge offline';
         text.textContent = '未运行';
-        btn.innerHTML = '&#9655; 启动';
+        btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> 启动';
         showToast('模拟模式: ' + name + ' 已停止', 'info', 2000);
       } else {
         try {
@@ -625,7 +623,7 @@
             isRunning = true;
             badge.className = 'status-badge online';
             text.textContent = '运行中';
-            btn.innerHTML = '&#9654; 停止';
+            btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 停止';
             showToast(displayName + ' 已启动', 'success');
             return;
           }
@@ -633,7 +631,7 @@
         isRunning = true;
         badge.className = 'status-badge online';
         text.textContent = '运行中';
-        btn.innerHTML = '&#9654; 停止';
+        btn.innerHTML = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 停止';
         showToast('模拟模式: ' + name + ' 已启动', 'success', 2000);
       }
     }
@@ -669,9 +667,9 @@
         var p = providers[i];
         html += '<tr data-provider-id="' + esc(p.id) + '">' +
           '<td><strong>' + esc(p.name) + '</strong></td>' +
-          '<td><code style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(p.provider_id) + '</code></td>' +
-          '<td><code style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;max-width:200px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.base_url) + '</code></td>' +
-          '<td><code style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;">' + (keyVisible ? esc(p.api_key) : maskKey(p.api_key)) + '</code></td>' +
+          '<td><code style="background:var(--color-bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(p.provider_id) + '</code></td>' +
+          '<td><code style="background:var(--color-bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;max-width:200px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.base_url) + '</code></td>' +
+          '<td><code style="background:var(--color-bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;font-family:\'SF Mono\',Menlo,monospace;">' + (keyVisible ? esc(p.api_key) : maskKey(p.api_key)) + '</code></td>' +
           '<td><label class="toggle"><input type="checkbox" class="provider-enable-toggle" ' + (p.enabled ? 'checked' : '') + '><span class="toggle-slider"></span></label></td>' +
           '<td class="actions">' +
             '<button class="btn btn-sm edit-provider-btn" data-id="' + esc(p.id) + '">编辑</button>' +
@@ -737,7 +735,7 @@
       row.className = 'form-check';
 
       var labelMain = document.createElement('label');
-      labelMain.style.cssText = 'display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text-secondary);';
+      labelMain.style.cssText = 'display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);';
       labelMain.setAttribute('for', checkboxId);
 
       var toggleWrapper = document.createElement('label');
@@ -776,12 +774,12 @@
       modal.appendChild(createCheckboxField('modal-enabled', '启用此供应商', true));
 
       var fetchRow = document.createElement('div');
-      fetchRow.style.cssText = 'display:flex;justify-content:flex-start;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);';
+      fetchRow.style.cssText = 'display:flex;justify-content:flex-start;margin-top:16px;padding-top:16px;border-top:1px solid var(--color-border);';
       var fetchBtn = document.createElement('button');
       fetchBtn.type = 'button';
       fetchBtn.className = 'btn';
       fetchBtn.id = 'modal-fetch-models';
-      fetchBtn.textContent = '\u{1F50D} 拉取模型列表';
+      fetchBtn.textContent = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 拉取模型列表';
       fetchBtn.disabled = true;
       fetchRow.appendChild(fetchBtn);
       modal.appendChild(fetchRow);
@@ -929,12 +927,12 @@
       modal.appendChild(createCheckboxField('modal-enabled', '启用此供应商', provider.enabled));
 
       var fetchRow2 = document.createElement('div');
-      fetchRow2.style.cssText = 'display:flex;justify-content:flex-start;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);';
+      fetchRow2.style.cssText = 'display:flex;justify-content:flex-start;margin-top:16px;padding-top:16px;border-top:1px solid var(--color-border);';
       var fetchBtn2 = document.createElement('button');
       fetchBtn2.type = 'button';
       fetchBtn2.className = 'btn';
       fetchBtn2.id = 'modal-fetch-models';
-      fetchBtn2.textContent = '\u{1F50D} 拉取模型列表';
+      fetchBtn2.textContent = '<svg class="icon-svg icon-svg-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 拉取模型列表';
       fetchRow2.appendChild(fetchBtn2);
       modal.appendChild(fetchRow2);
 
@@ -1044,8 +1042,8 @@
         html += '<tr>' +
           '<td><span class="ts">' + fmtTime(h.timestamp) + '</span></td>' +
           '<td>' + esc(h.action) + '</td>' +
-          '<td><code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:11px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(h.from) + '</code></td>' +
-          '<td><code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;font-size:11px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(h.to) + '</code></td>' +
+          '<td><code style="background:var(--color-bg-secondary);padding:2px 6px;border-radius:3px;font-size:11px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(h.from) + '</code></td>' +
+          '<td><code style="background:var(--color-bg-secondary);padding:2px 6px;border-radius:3px;font-size:11px;font-family:\'SF Mono\',Menlo,monospace;">' + esc(h.to) + '</code></td>' +
           '<td><span class="result-dot ' + (h.success ? 'success' : 'fail') + '"><span class="dot"></span>' + (h.success ? '成功' : '失败') + '</span></td>' +
         '</tr>';
       }
@@ -1145,7 +1143,7 @@
       title.style.alignItems = 'center';
 
       var titleText = document.createElement('span');
-      titleText.textContent = '\u{1F9E0} 选择模型 (' + providerId + ')';
+      titleText.textContent = '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg> 选择模型 (' + providerId + ')';
       title.appendChild(titleText);
 
       var ctrlBar = document.createElement('div');
@@ -1172,7 +1170,7 @@
       var modelsArea = document.createElement('div');
       modelsArea.id = 'models-area';
       modelsArea.style.cssText = 'max-height:400px;overflow-y:auto;margin-top:16px;';
-      modelsArea.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary);">\u{23F3} 正在拉取...</div>';
+      modelsArea.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-text-tertiary);"><svg class="icon-svg" style="width:24px;height:24px;" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 正在拉取...</div>';
       modal.appendChild(modelsArea);
 
       var footer = document.createElement('div');
@@ -1223,14 +1221,14 @@
           for (var i = 0; i < data.models.length; i++) {
             var m = data.models[i];
             allCheckboxes.push('cb_' + i);
-            html += '<label style="display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:13px;" onmouseover="this.style.background=\'var(--bg-secondary)\'" onmouseout="this.style.background=\'\'">' +
+            html += '<label style="display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:13px;" onmouseover="this.style.background=\'var(--color-bg-secondary)\'" onmouseout="this.style.background=\'\'">' +
               '<input type="checkbox" class="model-cb" data-index="' + i + '" value="' + esc(m.id) + '" style="flex-shrink:0;cursor:pointer;" />' +
               '<div style="display:flex;flex-direction:column;gap:1px;">' +
-                '<span style="font-weight:500;color:var(--text-primary);">' + esc(m.displayName || m.name) + '</span>' +
-                '<code style="font-size:11px;color:var(--text-tertiary);font-family:\'SF Mono\',Menlo,monospace;">' + esc(m.id) + '</code>' +
+                '<span style="font-weight:500;color:var(--color-text);">' + esc(m.displayName || m.name) + '</span>' +
+                '<code style="font-size:11px;color:var(--color-text-tertiary);font-family:\'SF Mono\',Menlo,monospace;">' + esc(m.id) + '</code>' +
               '</div>' +
             '</label>' +
-            ((i < data.models.length - 1) ? '<hr style="border:none;border-top:1px solid var(--border-light);margin:0 4px;">' : '');
+            ((i < data.models.length - 1) ? '<hr style="border:none;border-top:1px solid var(--color-border);margin:0 4px;">' : '');
           }
           modelsAreaEl.innerHTML = html;
 
@@ -1251,13 +1249,13 @@
             showToast('已选择 ' + selected.length + ' 个模型', 'success');
           };
         } else {
-          modelsAreaEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-secondary);">没有可用的模型，请检查 API Key 和 Base URL。</div>';
+          modelsAreaEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-text-secondary);">没有可用的模型，请检查 API Key 和 Base URL。</div>';
           cancelBtn.style.display = 'inline-flex';
           confirmBtn.style.display = 'none';
         }
       })
       .catch(function(err) {
-        modelsAreaEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--error);">拉取失败: ' + esc(err.message) + '</div>';
+        modelsAreaEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--color-error);">拉取失败: ' + esc(err.message) + '</div>';
         cancelBtn.style.display = 'inline-flex';
         confirmBtn.style.display = 'none';
       });
