@@ -14,6 +14,9 @@ export interface RouteConfig {
 }
 
 export class RouteEngine {
+  // D12: Current route index for round-robin strategy. Single-threaded deployment,
+  // so an instance variable is safe. For future cluster-scale deployments,
+  // replace with a shared distributed counter (Redis/etcd).
   private currentRouteIndex = 0;
   private routeConfigs: RouteConfig[] = [];
 

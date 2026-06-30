@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../../db/database.js';
+import crypto from 'crypto';
 import { SecretsManager, getEncryptionKey } from '../../utils/crypto.js';
 
 const router = Router();
@@ -20,16 +21,17 @@ router.get('/providers', (_req: Request, res: Response) => {
 
 // POST /admin-api/providers
 router.post('/providers', (req: Request, res: Response) => {
-  const { id, name, provider_id, api_key, base_url, enabled } = req.body;
-  if (!id || !name || !provider_id || !api_key || !base_url) {
-    res.status(400).json({ success: false, error: 'Missing required fields: id, name, provider_id, api_key, base_url', code: 'MISSING_FIELDS' });
+  const { id: rawId, name, provider_id, api_key, base_url, enabled } = req.body;
+  if (!name || !provider_id || !api_key || !base_url) {
+    res.status(400).json({ success: false, error: 'Missing required fields: name, provider_id, api_key, base_url', code: 'MISSING_FIELDS' });
     return;
   }
+  const id = rawId || crypto.randomUUID();
   try {
     const encKey = secrets.encrypt(api_key);
     const stmt = db.prepare(`INSERT INTO providers (id, name, provider_id, api_key, base_url, enabled) VALUES (?, ?, ?, ?, ?, ?)`);
     stmt.run(id, name, provider_id, encKey, base_url, enabled ? 1 : 0);
-    res.json({ success: true });
+    res.json({ success: true, id });
   } catch (e: any) {
     res.status(409).json({ success: false, error: e.message, code: 'DUPLICATE_PROVIDER' });
   }
@@ -106,8 +108,12 @@ router.get('/models', (_req: Request, res: Response) => {
 // POST /admin-api/models
 router.post('/models', (req: Request, res: Response) => {
   const { id, provider_id, name, enabled, alias } = req.body;
-  if (!id || !provider_id || !name) {
-    res.status(400).json({ success: false, error: 'Missing required fields: id, provider_id, name', code: 'MISSING_FIELDS' });
+  if (!id || !/^[a-zA-Z0-9_-]{1,128}$/.test(id)) {
+    res.status(400).json({ success: false, error: 'Invalid model id format (allowed: a-zA-Z0-9_- up to 128 chars)', code: 'INVALID_ID' });
+    return;
+  }
+  if (!provider_id || !name) {
+    res.status(400).json({ success: false, error: 'Missing required fields: provider_id, name', code: 'MISSING_FIELDS' });
     return;
   }
   db.prepare('INSERT INTO models (id, provider_id, name, enabled, alias) VALUES (?, ?, ?, ?, ?)').run(
@@ -170,15 +176,36 @@ router.get('/health', (_req: Request, res: Response) => {
 // GET /admin-api/settings
 router.get('/settings', (_req: Request, res: Response) => {
   const rows = db.prepare('SELECT * FROM settings').all();
-  const settings: Record<string, string> = {};
-  (rows as any[]).forEach(r => settings[r.key] = r.value);
+  const settings: Record<string, unknown> = {};
+  (rows as any[]).forEach(r => {
+    const v = r.value;
+    const t = r.value_type || 'string';
+    if (t === 'number') settings[r.key] = Number(v);
+    else if (t === 'boolean') settings[r.key] = v === 'true';
+    else if (t === 'json') settings[r.key] = JSON.parse(v);
+    else settings[r.key] = v;
+  });
   res.json({ settings });
 });
 
 // PUT /admin-api/settings
 router.put('/settings', (req: Request, res: Response) => {
-  const { key, value } = req.body;
-  db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run(key, value);
+  const { key, value, value_type } = req.body;
+  let stringValue: string;
+  let valueType = value_type || 'string';
+  if (typeof value === 'number') {
+    stringValue = String(value);
+    valueType = 'number';
+  } else if (typeof value === 'boolean') {
+    stringValue = value ? 'true' : 'false';
+    valueType = 'boolean';
+  } else if (typeof value === 'object') {
+    stringValue = JSON.stringify(value);
+    valueType = 'json';
+  } else {
+    stringValue = String(value);
+  }
+  db.prepare('INSERT OR REPLACE INTO settings (key, value, value_type) VALUES (?, ?, ?)').run(key, stringValue, valueType);
   res.json({ success: true });
 });
 

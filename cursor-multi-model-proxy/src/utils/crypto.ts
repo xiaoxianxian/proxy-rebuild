@@ -51,12 +51,8 @@ export function getEncryptionKey(): Buffer {
 }
 
 function expandKey(secretKey: string): Buffer {
-  if (secretKey.length < KEY_LENGTH) {
-    const hash = crypto.createHash('sha256');
-    hash.update(secretKey);
-    return hash.digest();
-  }
-  return Buffer.from(secretKey.slice(0, KEY_LENGTH));
+  const salt = Buffer.from('cursor-multi-model-proxy-salt', 'utf8');
+  return crypto.pbkdf2Sync(secretKey, salt, 100000, KEY_LENGTH, 'sha256');
 }
 
 export class SecretsManager {

@@ -16,6 +16,14 @@ db.pragma('journal_mode = WAL');
 // 启用外键约束以确保引用完整性
 db.pragma('foreign_keys = ON');
 
+// D10: Checkpoint WAL on startup to prevent stale WAL file residue after crashes
+try {
+  db.pragma('wal_checkpoint(TRUNCATE)');
+  console.log('[DB] WAL checkpoint completed on startup.');
+} catch (e) {
+  console.warn('[DB] WAL checkpoint failed:', (e as Error).message);
+}
+
 // 创建数据库表
 db.exec(`
   CREATE TABLE IF NOT EXISTS providers (
@@ -36,7 +44,8 @@ db.exec(`
     enabled INTEGER DEFAULT 1,
     alias TEXT,
     created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE
+    FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE,
+    UNIQUE(provider_id, id)
   );
 
   CREATE TABLE IF NOT EXISTS routes (
@@ -58,7 +67,8 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY,
-    value TEXT NOT NULL
+    value TEXT NOT NULL,
+    value_type TEXT DEFAULT 'string'
   );
 `);
 

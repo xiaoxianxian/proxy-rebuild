@@ -51,4 +51,30 @@
     };
   };
 
+
+  // ===== Shared PROXY CONFIGS (F5: centralized) =====
+  exports.PROXY_CONFIGS = {
+    codex: {
+      name: 'Codex Proxy',
+      icon: '&#129392;',
+      iconClass: 'codex',
+      port: 18790,
+      defaultVersion: 'v1.2.0'
+    },
+    hermes: {
+      name: 'Hermes Proxy',
+      icon: '&#9889;',
+      iconClass: 'hermes',
+      port: 18793,
+      defaultVersion: 'v0.9.4'
+    },
+    cursor: {
+      name: 'Cursor Proxy',
+      icon: '&#9729;',
+      iconClass: 'cursor',
+      port: 18794,
+      defaultVersion: 'v2.1.0'
+    }
+  };
+
 })(typeof window !== 'undefined' ? window : {});

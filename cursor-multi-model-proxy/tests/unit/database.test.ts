@@ -40,7 +40,8 @@ function createTestDb() {
       enabled INTEGER DEFAULT 1,
       alias TEXT,
       created_at TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE
+      FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE,
+      UNIQUE(provider_id, id)
     );
 
     CREATE TABLE IF NOT EXISTS routes (
@@ -62,7 +63,8 @@ function createTestDb() {
 
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
-      value TEXT NOT NULL
+      value TEXT NOT NULL,
+      value_type TEXT DEFAULT 'string'
     );
   `);
 

@@ -68,7 +68,7 @@
       var config = configs[name] || { name: name, icon: '&#9729;' };
       var escapedName = utils.esc(name);
       var escapedConfigName = utils.esc(config.name);
-      return '<a href="../proxy-manager-redesign/pages/proxy-config.html?proxy=' + escapedName + '" ' +
+      return '<a href="proxy-config.html?proxy=' + escapedName + '" ' +
         'class="nav-item proxy-nav-item" ' +
         'data-proxy="' + escapedName + '" ' +
         'data-tooltip="' + escapedConfigName + '" ' +
